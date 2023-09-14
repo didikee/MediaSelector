@@ -13,8 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 /**
- *
- * description: 
+ * description:
  */
 public final class ImageSelector {
     public static final int VIDEO = 0;
@@ -36,6 +35,8 @@ public final class ImageSelector {
         int maxSelectCount = 1;/*1: 单选,大于1则为多选*/
         /*默认不显示文件详情*/
         boolean showDetail = false;
+        //目标文件类型，其他的都不需要
+        private String[] targetMimetypes;
 
         public Options() {
         }
@@ -45,6 +46,7 @@ public final class ImageSelector {
             mediaType = in.readInt();
             maxSelectCount = in.readInt();
             showDetail = in.readByte() != 0;
+            targetMimetypes = in.createStringArray();
         }
 
         public static final Creator<Options> CREATOR = new Creator<Options>() {
@@ -79,6 +81,17 @@ public final class ImageSelector {
             return this;
         }
 
+        /**
+         * 有这个值应该就要忽略上面的{mediaType}
+         *
+         * @param mimetypes 目标媒体类型,可以参考：{@link com.androidx.media.MimeType}
+         * @return
+         */
+        public Options targetMimetypes(String[] mimetypes) {
+            this.targetMimetypes = mimetypes;
+            return this;
+        }
+
         public Options maxSelectCount(int max) {
             this.maxSelectCount = Math.max(1, max);
             return this;
@@ -95,10 +108,11 @@ public final class ImageSelector {
         }
 
         @Override
-        public void writeToParcel(Parcel dest, int flags) {
-            dest.writeInt(mediaType);
-            dest.writeInt(maxSelectCount);
-            dest.writeByte((byte) (showDetail ? 1 : 0));
+        public void writeToParcel(@NonNull Parcel parcel, int i) {
+            parcel.writeInt(mediaType);
+            parcel.writeInt(maxSelectCount);
+            parcel.writeByte((byte) (showDetail ? 1 : 0));
+            parcel.writeStringArray(targetMimetypes);
         }
     }
 
