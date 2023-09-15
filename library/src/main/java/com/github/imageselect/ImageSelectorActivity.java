@@ -4,24 +4,26 @@ import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.androidx.picker.MediaFolder;
 import com.androidx.picker.MediaItem;
+import com.github.imageselect.empty.EmptyLayoutHolder;
 
 import java.util.ArrayList;
 import java.util.Locale;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -31,7 +33,7 @@ import androidx.recyclerview.widget.RecyclerView;
  * create time: 4/16/20 5:50 PM
  * description: 选择照片，支持单选和多选
  */
-public class ImageSelectorActivity extends AppCompatActivity implements View.OnClickListener, LoadMediaActivity {
+public class ImageSelectorActivity extends BaseMediaSelectActivity implements View.OnClickListener, LoadMediaActivity {
 
     private RecyclerView contentRecyclerView;
     private RecyclerView folderRecyclerView;
@@ -39,17 +41,20 @@ public class ImageSelectorActivity extends AppCompatActivity implements View.OnC
     private TextView titleTextView;
     private Button btDone;
     private View rootLayout, titleAppBarLayout, bottomActionLayout, loadingProgressBar;
+    private FrameLayout emptyLayoutContainer;
     private ContentAdapter contentAdapter;
     private boolean singleMode;
     private FolderAdapter folderAdapter;
     private ImageSelector.Options options;
-    private int colorAccent;
+    private int colorAccent = Color.BLUE;
+    private EmptyLayoutHolder emptyLayoutHolder;
 
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.default_activity_image_selector);
+        hideActionBar();
         Intent intent = getIntent();
         if (intent != null) {
             options = intent.getParcelableExtra(ImageSelector.DATA_OPTIONS);
@@ -58,7 +63,8 @@ public class ImageSelectorActivity extends AppCompatActivity implements View.OnC
             finish();
             return;
         }
-        colorAccent = Utils.getAccentColor(this);
+        // TODO: 设置主题色
+        // colorAccent = Utils.getAccentColor(this);
         singleMode = options.maxSelectCount <= 1;
         contentRecyclerView = findViewById(R.id.recyclerView);
         folderRecyclerView = findViewById(R.id.recyclerViewFolder);
@@ -69,6 +75,7 @@ public class ImageSelectorActivity extends AppCompatActivity implements View.OnC
         titleAppBarLayout = findViewById(R.id.appbar);
         bottomActionLayout = findViewById(R.id.bottom);
         loadingProgressBar = findViewById(R.id.loading);
+        emptyLayoutContainer = findViewById(R.id.layout_empty);
 
         backImageView.setOnClickListener(this);
         titleTextView.setOnClickListener(this);
@@ -76,7 +83,9 @@ public class ImageSelectorActivity extends AppCompatActivity implements View.OnC
 
 
         bottomActionLayout.setVisibility(singleMode ? View.GONE : View.VISIBLE);
-
+        if (emptyLayoutHolder != null) {
+            emptyLayoutContainer.addView(emptyLayoutHolder.getEmptyView(this));
+        }
 
         setupContentList();
         setupFolderList();
@@ -215,6 +224,7 @@ public class ImageSelectorActivity extends AppCompatActivity implements View.OnC
 
     /**
      * 完成选图操作
+     *
      * @param mediaItem
      */
     protected void onDone(@Nullable MediaItem mediaItem) {
@@ -257,6 +267,7 @@ public class ImageSelectorActivity extends AppCompatActivity implements View.OnC
             loadingProgressBar.setVisibility(View.VISIBLE);
             contentRecyclerView.setVisibility(View.INVISIBLE);
         }
+        hideEmptyLayout();
     }
 
     @Override
@@ -265,7 +276,7 @@ public class ImageSelectorActivity extends AppCompatActivity implements View.OnC
             return;
         }
         if (allMediaFolders == null || allMediaFolders.size() == 0) {
-            //TODO 显示空白占位页
+            showEmptyLayout();
             return;
         }
         if (loadingProgressBar != null && contentRecyclerView != null) {
@@ -299,6 +310,18 @@ public class ImageSelectorActivity extends AppCompatActivity implements View.OnC
         if (v == titleTextView) {
             toggleFolderUi();
             return;
+        }
+    }
+
+    private void showEmptyLayout() {
+        if (emptyLayoutHolder != null) {
+            emptyLayoutHolder.show();
+        }
+    }
+
+    private void hideEmptyLayout() {
+        if (emptyLayoutHolder != null) {
+            emptyLayoutHolder.hide();
         }
     }
 }

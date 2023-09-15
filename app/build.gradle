@@ -3,11 +3,11 @@ plugins {
 }
 
 android {
-    namespace 'com.example.sample'
+    namespace 'com.github.selectdemo'
     compileSdk 33
 
     defaultConfig {
-        applicationId "com.example.sample"
+        applicationId "com.github.selectdemo"
         minSdk 21
         targetSdk 33
         versionCode 1
@@ -32,7 +32,12 @@ dependencies {
 
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'com.google.android.material:material:1.8.0'
+    implementation project(path: ':library')
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+
+    implementation files('libs/androidx-1.2.4-release.aar')
+    implementation 'com.github.bumptech.glide:glide:4.11.0'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
 }

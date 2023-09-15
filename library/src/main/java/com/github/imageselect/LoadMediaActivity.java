@@ -12,7 +12,7 @@ import androidx.annotation.Nullable;
  *
  * description: 
  */
-interface LoadMediaActivity {
+public interface LoadMediaActivity {
     ContentResolver getContentResolver();
 
     void onPreLoad();

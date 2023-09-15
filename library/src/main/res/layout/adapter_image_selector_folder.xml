@@ -39,7 +39,7 @@
                 android:ellipsize="end"
                 android:lines="1"
                 android:singleLine="true"
-                android:textColor="@color/text"
+                android:textColor="@color/ms_text"
                 android:textSize="16sp" />
 
             <TextView
@@ -50,7 +50,7 @@
                 android:ellipsize="end"
                 android:lines="1"
                 android:singleLine="true"
-                android:textColor="@color/textSecond"
+                android:textColor="@color/ms_text_second"
                 android:textSize="14sp" />
 
         </LinearLayout>

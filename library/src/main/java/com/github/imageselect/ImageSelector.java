@@ -37,6 +37,8 @@ public final class ImageSelector {
         boolean showDetail = false;
         //目标文件类型，其他的都不需要
         private String[] targetMimetypes;
+        // 允许重复选择
+        private boolean allowDuplicateSelections = false;
 
         public Options() {
         }

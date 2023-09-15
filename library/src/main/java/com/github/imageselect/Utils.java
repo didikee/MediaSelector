@@ -1,16 +1,12 @@
 package com.github.imageselect;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.res.Resources;
-import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.LayerDrawable;
 import android.util.DisplayMetrics;
 import android.util.Pair;
-import android.util.TypedValue;
 import android.view.WindowManager;
 
 import androidx.annotation.NonNull;
@@ -118,32 +114,6 @@ final class Utils {
         final int padding = dp2px(context, 1);
         layerDrawable.setLayerInset(1, padding, padding, padding, padding);
         return layerDrawable;
-    }
-
-    public static int getAccentColor(@NonNull Activity activity) {
-        TypedValue typedValue = new TypedValue();
-        TypedArray a = null;
-        int color;
-        try {
-            a = activity.obtainStyledAttributes(typedValue.data,
-                    new int[]{R.attr.colorAccent, R.attr.colorSecondary}
-            );
-            color = a.getColor(0, Color.TRANSPARENT);
-            if (color != Color.TRANSPARENT) {
-                return color;
-            }
-            color = a.getColor(1, Color.TRANSPARENT);
-            if (color != Color.TRANSPARENT) {
-                return color;
-            }
-        } catch (Resources.NotFoundException e) {
-            e.printStackTrace();
-        } finally {
-            if (a != null) {
-                a.recycle();
-            }
-        }
-        return Color.BLUE;
     }
 
 }

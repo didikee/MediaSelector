@@ -48,6 +48,11 @@
         android:layout_height="match_parent"
         android:layout_below="@+id/appbar">
 
+        <FrameLayout
+            android:id="@+id/layout_empty"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
         <ProgressBar
             android:id="@+id/loading"
             android:layout_width="56dp"
