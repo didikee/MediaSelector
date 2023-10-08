@@ -1,6 +1,7 @@
 package com.github.imageselect;
 
 import android.content.ContentResolver;
+import android.content.res.Resources;
 
 import com.androidx.picker.MediaFolder;
 
@@ -14,6 +15,8 @@ import androidx.annotation.Nullable;
  */
 public interface LoadMediaActivity {
     ContentResolver getContentResolver();
+
+    Resources getResources();
 
     void onPreLoad();
 

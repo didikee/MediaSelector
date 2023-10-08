@@ -17,16 +17,11 @@ import androidx.annotation.NonNull;
  */
 public class LoadMediaTask extends AsyncTask<Void, Void, ArrayList<MediaFolder>> {
     private WeakReference<LoadMediaActivity> weakReference;
-    private boolean loadVideo = false;
-
-    public LoadMediaTask(@NonNull LoadMediaActivity activity) {
+    @NonNull
+    private MediaSelectProvider provider;
+    public LoadMediaTask(@NonNull LoadMediaActivity activity,@NonNull MediaSelectProvider provider) {
         this.weakReference = new WeakReference<>(activity);
-        this.loadVideo = false;
-    }
-
-    public LoadMediaTask(@NonNull LoadMediaActivity activity, boolean loadVideo) {
-        this.weakReference = new WeakReference<>(activity);
-        this.loadVideo = loadVideo;
+        this.provider = provider;
     }
 
     @Override
@@ -35,18 +30,19 @@ public class LoadMediaTask extends AsyncTask<Void, Void, ArrayList<MediaFolder>>
         if (loadMediaActivity == null) {
             return null;
         }
-        ContentResolver contentResolver = loadMediaActivity.getContentResolver();
-        if (loadVideo) {
-            return new MediaLoader.Builder(contentResolver)
-                    .setOrder("date_added DESC")
-                    .ofVideo()
-                    .getFolders(null);
-        } else {
-            return new MediaLoader.Builder(contentResolver)
-                    .setOrder("date_added DESC")
-                    .ofImage()
-                    .getFolders(null);
-        }
+//        ContentResolver contentResolver = loadMediaActivity.getContentResolver();
+//        if (loadVideo) {
+//            return new MediaLoader.Builder(contentResolver)
+//                    .setOrder("date_added DESC")
+//                    .ofVideo()
+//                    .getFolders(null);
+//        } else {
+//            return new MediaLoader.Builder(contentResolver)
+//                    .setOrder("date_added DESC")
+//                    .ofImage()
+//                    .getFolders(null);
+//        }
+        return provider.loadMedias(loadMediaActivity);
     }
 
     @Override

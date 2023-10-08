@@ -24,6 +24,8 @@ import java.util.Locale;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.ViewStubCompat;
+import androidx.core.view.ViewCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -49,6 +51,11 @@ public class ImageSelectorActivity extends BaseMediaSelectActivity implements Vi
     private int colorAccent = Color.BLUE;
     private EmptyLayoutHolder emptyLayoutHolder;
 
+    /**
+     * 这个类负责图片选择的所有自定义项的支持，并可以交给外部去实现，达到完全自定义的目的
+     */
+    private MediaSelectProvider provider;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -63,6 +70,29 @@ public class ImageSelectorActivity extends BaseMediaSelectActivity implements Vi
             finish();
             return;
         }
+        String providerClzName = options.providerClzName;
+        if (!TextUtils.isEmpty(providerClzName)) {
+            try {
+                // 使用反射获取Class对象
+                Class<?> clazz = Class.forName(providerClzName);
+                // 使用Class对象创建实例
+                Object instance = clazz.newInstance();
+
+                // 这里可以根据需要使用实例进行操作
+                if (instance instanceof MediaSelectProvider) {
+                    provider = (MediaSelectProvider) instance;
+                }
+            } catch (ClassNotFoundException | IllegalAccessException | InstantiationException e) {
+                e.printStackTrace();
+            }
+        } else {
+            //TODO 提供一个默认的实现
+        }
+        if (provider == null) {
+            finish();
+            return;
+        }
+
         // TODO: 设置主题色
         // colorAccent = Utils.getAccentColor(this);
         singleMode = options.maxSelectCount <= 1;
@@ -91,8 +121,9 @@ public class ImageSelectorActivity extends BaseMediaSelectActivity implements Vi
         setupFolderList();
         updateSelectCountUi();
 
+
         // load image
-        new LoadMediaTask(this, true).execute();
+        new LoadMediaTask(this, provider).execute();
     }
 
     private void setupContentList() {

@@ -2,4 +2,6 @@
 <resources>
     <color name="ms_text">#222222</color>
     <color name="ms_text_second">#888888</color>
+    <!--图片内容的滑块颜色-->
+    <color name="ms_recyclerview_scrollbar">@android:color/holo_blue_dark</color>
 </resources>

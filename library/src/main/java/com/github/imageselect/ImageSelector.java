@@ -11,6 +11,7 @@ import java.util.ArrayList;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 
 /**
  * description:
@@ -40,6 +41,8 @@ public final class ImageSelector {
         // 允许重复选择
         private boolean allowDuplicateSelections = false;
 
+        String providerClzName;
+
         public Options() {
         }
 
@@ -49,6 +52,8 @@ public final class ImageSelector {
             maxSelectCount = in.readInt();
             showDetail = in.readByte() != 0;
             targetMimetypes = in.createStringArray();
+            allowDuplicateSelections = in.readByte() != 0;
+            providerClzName = in.readString();
         }
 
         public static final Creator<Options> CREATOR = new Creator<Options>() {
@@ -83,6 +88,12 @@ public final class ImageSelector {
             return this;
         }
 
+        public Options customProvider(Class<? extends MediaSelectProvider> customProvider) {
+            this.providerClzName =  customProvider.getName();
+            return this;
+        }
+
+
         /**
          * 有这个值应该就要忽略上面的{mediaType}
          *
@@ -115,6 +126,28 @@ public final class ImageSelector {
             parcel.writeInt(maxSelectCount);
             parcel.writeByte((byte) (showDetail ? 1 : 0));
             parcel.writeStringArray(targetMimetypes);
+            parcel.writeByte((byte) (allowDuplicateSelections ? 1 : 0));
+            parcel.writeString(providerClzName);
+        }
+
+        public void start(@NonNull Activity activity, int requestCode) {
+            try {
+                Intent intent = new Intent(activity, ImageSelectorActivity.class);
+                intent.putExtra(DATA_OPTIONS, this);
+                activity.startActivityForResult(intent, requestCode);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        public void start(@NonNull Fragment fragment, int requestCode) {
+            try {
+                Intent intent = new Intent(fragment.getContext(), ImageSelectorActivity.class);
+                intent.putExtra(DATA_OPTIONS, this);
+                fragment.startActivityForResult(intent, requestCode);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
