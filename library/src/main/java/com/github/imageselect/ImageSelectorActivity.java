@@ -25,6 +25,7 @@ import java.util.Locale;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.ViewStubCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.view.ViewCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -92,9 +93,10 @@ public class ImageSelectorActivity extends BaseMediaSelectActivity implements Vi
             finish();
             return;
         }
+        provider.init(this);
 
         // TODO: 设置主题色
-        // colorAccent = Utils.getAccentColor(this);
+        colorAccent = ContextCompat.getColor(this, R.color.colorAccent);
         singleMode = options.maxSelectCount <= 1;
         contentRecyclerView = findViewById(R.id.recyclerView);
         folderRecyclerView = findViewById(R.id.recyclerViewFolder);
@@ -211,7 +213,7 @@ public class ImageSelectorActivity extends BaseMediaSelectActivity implements Vi
     private void updateSelectCountUi() {
         if (contentAdapter != null && btDone != null) {
             int selectCount = contentAdapter.getSelectCount();
-            String text = "Next";
+            String text = provider.getBottomActionButtonText();
             if (selectCount > 0) {
                 btDone.setEnabled(true);
                 String format = String.format(Locale.getDefault(), "%s(%d)", text, selectCount);
