@@ -15,18 +15,16 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.androidx.LogUtils;
 import com.androidx.picker.MediaFolder;
 import com.androidx.picker.MediaItem;
-import com.github.imageselect.empty.EmptyLayoutHolder;
 
 import java.util.ArrayList;
 import java.util.Locale;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.ViewStubCompat;
 import androidx.core.content.ContextCompat;
-import androidx.core.view.ViewCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -50,7 +48,6 @@ public class ImageSelectorActivity extends BaseMediaSelectActivity implements Vi
     private FolderAdapter folderAdapter;
     private ImageSelector.Options options;
     private int colorAccent = Color.BLUE;
-    private EmptyLayoutHolder emptyLayoutHolder;
 
     /**
      * 这个类负责图片选择的所有自定义项的支持，并可以交给外部去实现，达到完全自定义的目的
@@ -115,8 +112,10 @@ public class ImageSelectorActivity extends BaseMediaSelectActivity implements Vi
 
 
         bottomActionLayout.setVisibility(singleMode ? View.GONE : View.VISIBLE);
-        if (emptyLayoutHolder != null) {
-            emptyLayoutContainer.addView(emptyLayoutHolder.getEmptyView(this));
+        View emptyLayout = provider.getEmptyLayout(this);
+        if (emptyLayout != null) {
+            emptyLayoutContainer.addView(emptyLayout);
+            hideEmptyLayout();
         }
 
         setupContentList();
@@ -305,15 +304,20 @@ public class ImageSelectorActivity extends BaseMediaSelectActivity implements Vi
 
     @Override
     public void onLoadFinished(ArrayList<MediaFolder> allMediaFolders) {
+        LogUtils.d("On Media load finished.");
         if (isFinishing()) {
             return;
+        }
+        // hide progress bar
+        if (loadingProgressBar != null) {
+            loadingProgressBar.setVisibility(View.GONE);
         }
         if (allMediaFolders == null || allMediaFolders.size() == 0) {
             showEmptyLayout();
             return;
         }
-        if (loadingProgressBar != null && contentRecyclerView != null) {
-            loadingProgressBar.setVisibility(View.GONE);
+
+        if (contentRecyclerView != null) {
             contentRecyclerView.setVisibility(View.VISIBLE);
         }
         if (folderAdapter != null) {
@@ -347,14 +351,10 @@ public class ImageSelectorActivity extends BaseMediaSelectActivity implements Vi
     }
 
     private void showEmptyLayout() {
-        if (emptyLayoutHolder != null) {
-            emptyLayoutHolder.show();
-        }
+        emptyLayoutContainer.setVisibility(View.VISIBLE);
     }
 
     private void hideEmptyLayout() {
-        if (emptyLayoutHolder != null) {
-            emptyLayoutHolder.hide();
-        }
+        emptyLayoutContainer.setVisibility(View.GONE);
     }
 }

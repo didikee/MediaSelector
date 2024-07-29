@@ -1,10 +1,9 @@
 package com.github.imageselect;
 
-import android.content.ContentResolver;
 import android.os.AsyncTask;
 
+import com.androidx.LogUtils;
 import com.androidx.picker.MediaFolder;
-import com.androidx.picker.MediaLoader;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -30,6 +29,7 @@ public class LoadMediaTask extends AsyncTask<Void, Void, ArrayList<MediaFolder>>
         if (loadMediaActivity == null) {
             return null;
         }
+        LogUtils.d("Start load medias");
 //        ContentResolver contentResolver = loadMediaActivity.getContentResolver();
 //        if (loadVideo) {
 //            return new MediaLoader.Builder(contentResolver)
