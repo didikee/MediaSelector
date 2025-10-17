@@ -15,13 +15,16 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.androidx.Android15Compat;
 import com.androidx.LogUtils;
 import com.androidx.picker.MediaFolder;
 import com.androidx.picker.MediaItem;
+import com.google.android.material.appbar.AppBarLayout;
 
 import java.util.ArrayList;
 import java.util.Locale;
 
+import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
@@ -41,7 +44,8 @@ public class ImageSelectorActivity extends BaseMediaSelectActivity implements Vi
     private ImageView backImageView;
     private TextView titleTextView;
     private Button btDone;
-    private View rootLayout, titleAppBarLayout, bottomActionLayout, loadingProgressBar;
+    private AppBarLayout titleAppBarLayout;
+    private View rootLayout, bottomActionLayout, loadingProgressBar;
     private FrameLayout emptyLayoutContainer;
     private ContentAdapter contentAdapter;
     private boolean singleMode;
@@ -58,7 +62,13 @@ public class ImageSelectorActivity extends BaseMediaSelectActivity implements Vi
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
         setContentView(R.layout.default_activity_image_selector);
+        rootLayout = findViewById(R.id.root);
+        titleAppBarLayout = findViewById(R.id.appbar);
+        Android15Compat.INSTANCE.edgeWithAppBar(rootLayout, titleAppBarLayout);
+        Android15Compat.INSTANCE.tintStatusBars(this, false);
+
         hideActionBar();
         Intent intent = getIntent();
         if (intent != null) {
@@ -100,8 +110,7 @@ public class ImageSelectorActivity extends BaseMediaSelectActivity implements Vi
         backImageView = findViewById(R.id.back);
         titleTextView = findViewById(R.id.title);
         btDone = findViewById(R.id.done);
-        rootLayout = findViewById(R.id.root);
-        titleAppBarLayout = findViewById(R.id.appbar);
+
         bottomActionLayout = findViewById(R.id.bottom);
         loadingProgressBar = findViewById(R.id.loading);
         emptyLayoutContainer = findViewById(R.id.layout_empty);
